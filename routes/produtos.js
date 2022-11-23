@@ -5,14 +5,14 @@ const router = express.Router();
 // Lista todos os produtos
 router.get('/', (req, res, next) => {
     res.status(200).send({
-        mensagem: 'Usando o Get dentro da rota de produtos'
+        mensagem: 'Lista todos os produtos'
     })
 });
 
 // Insere um produto
 router.post('/', (req, res, next) => {
     res.status(201).send({
-        mensagem: 'Usando o Post na rota de produtos'
+        mensagem: 'Insere um produto'
     })
 });
 
@@ -35,14 +35,14 @@ router.get('/:id_produto', (req, res, next) => {
 // Altera um produto
 router.patch('/', (req, res, next) => {
     res.status(201).send({
-        mensagem: 'Usando o Patch dentro da rota de produtos'
+        mensagem: 'Altera um produto'
     })
 });
 
 // Deleta um produto
 router.delete('/', (req, res, next) => {
     res.status(201).send({
-        mensagem: 'Usando o Delete dentro da rota de produtos'
+        mensagem: 'Exclui produto'
     })
 })
 
