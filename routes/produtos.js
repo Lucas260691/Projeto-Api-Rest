@@ -14,8 +14,10 @@ router.post('/', (req, res, next) => {
 })
 
 router.get('/:id_produto', (req, res, next) => {
+    const id = req.params.id_produto
     res.status(200).send({
-        mensagem: 'Usando o Get de um produto exclusivo'
+        mensagem: 'Usando o Get de um produto exclusivo',
+        id:id
     })
 })
 
