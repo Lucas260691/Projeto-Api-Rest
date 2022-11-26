@@ -1,4 +1,5 @@
-const mysql = require('mysql');
+require("dotenv").config();
+const mysql = require('mysql2');
 
 let pool = mysql.createPool({
     "user": process.env.MYSQL_USER,
@@ -8,4 +9,4 @@ let pool = mysql.createPool({
     "port": process.env.MYSQL_PORT
 });
 
-exports.pool = pool;
+module.exports = pool;

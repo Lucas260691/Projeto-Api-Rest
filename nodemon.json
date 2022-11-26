@@ -1,7 +1,7 @@
 {
     "env" : {
         "MYSQL_USER": "root",
-        "MYSQL_PASSWORD": "Fiona2606991!",
+        "MYSQL_PASSWORD": "Fiona260691!",
         "MYSQL_DATABASE": "ecommerce",
         "MYSQL_HOST": "localhost",
         "MYSQL_PORT": 3306
