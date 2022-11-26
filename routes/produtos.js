@@ -43,18 +43,17 @@ router.post('/', (req, res, next) => {
 
 // Lista um produto pelo id específico
 router.get('/:id_produto', (req, res, next) => {
-    const id = req.params.id_produto
-
-    if(id === especial){
-        res.status(200).send({
-            mensagem: 'Você descobriu o id especial',
-            id:id
-        })
-    }else{
-        res.status(200).send({
-            mensagem: 'Você passou um id'
-        })
-    }
+    mysql.getConnection((error, conn) => {
+        if(error) { return res.status(500).send({ error: error})}
+        conn.query(
+            'SELECT * FROM produtos WHERE id_produtos = ?;',
+            [req.params.id_produto],
+            (error, resultado, fields) => {
+                if(error) { return res.status(500).send({ error: error})}
+                return res.status(200).send({response: resultado})
+            }
+        )
+    })
 });
 
 // Altera um produto
