@@ -99,8 +99,29 @@ router.get('/:id_pedidos', (req, res, next) => {
 
 // Deleta um pedido
 router.delete('/', (req, res, next) => {
-    res.status(201).send({
-        mensagem: 'Pedido excluído'
+    mysql.getConnection((error, conn) => {
+        if(error) {return res.status(500).send({ error: error})}
+        conn.query(
+            `DELETE FROM pedidos WHERE id_pedidos = ?`, [req.body.id_pedidos],
+            (error, result, field) => {
+                conn.release();
+                if (error) { return res.status(500).send({ error: error })}
+                const response = {
+                    mensagem: 'Pedido deletado com sucesso',
+                    request: {
+                        tipo: 'POST',
+                        descricao: 'Insere um pedido',
+                        url: 'http://localhost:3000/pedidos',
+                        body: {
+                            id_pedidos: 'Number',
+                            quantidade: 'Number'
+                        }
+                    }
+                    
+                }
+                return res.status(202).send(response);
+            }
+        )
     })
 });
 
