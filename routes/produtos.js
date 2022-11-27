@@ -137,13 +137,23 @@ router.delete('/', (req, res, next) => {
         if(error) {return res.status(500).send({ error: error})}
         conn.query(
             `DELETE FROM produtos WHERE id_produtos = ?`, [req.body.id_produtos],
-            (error, resultado, field) => {
+            (error, result, field) => {
                 conn.release();
                 if (error) { return res.status(500).send({ error: error })}
-
-                res.status(202).send({
-                    mensagem: 'Produto removido com sucesso'
-                })
+                const response = {
+                    mensagem: 'Produto deletado com sucesso',
+                    request: {
+                        tipo: 'POST',
+                        descricao: 'Insere um produto',
+                        url: 'http://localhost:3000/produtos',
+                        body: {
+                            nome: 'String',
+                            preco: 'Number'
+                        }
+                    }
+                    
+                }
+                res.status(202).send(response);
             }
         )
     })
