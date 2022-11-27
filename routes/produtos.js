@@ -109,11 +109,23 @@ router.patch('/', (req, res, next) => {
                 req.body.preco,
                 req.body.id_produtos,
            ],
-            (error, resultado, fields) => {
+            (error, result, fields) => {
+                conn.release();
                 if(error) { return res.status(500).send({ error: error})}
-                res.status(202).send({
-                    mensagem: 'Produto alterado com sucesso'
-                })
+                const response = {
+                    mensagem: 'Produto atualizado com sucesso',
+                    produtoAtualizado: {
+                        id_produtos: req.body.id_produtos,
+                        nome: req.body.nome,
+                        preco: req.body.preco,
+                        request: {
+                            tipo: 'GET',
+                            descricao: 'Retorna os detalhes de um produto específico',
+                            url: 'http://localhost:3000/produtos/' + req.body.id_produtos
+                        }
+                    }
+                }
+                res.status(202).send(response);
             }
         )
     })
