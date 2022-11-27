@@ -68,9 +68,28 @@ router.get('/:id_produtos', (req, res, next) => {
         conn.query(
             'SELECT * FROM produtos WHERE id_produtos = ?;',
             [req.params.id_produtos],
-            (error, resultado, fields) => {
+            (error, result, fields) => {
                 if(error) { return res.status(500).send({ error: error})}
-                return res.status(200).send({response: resultado})
+                
+                if(result.length == 0) {
+                    return res.status(404).send({
+                        mensagem:'Não foi encontrado produto com este ID'
+                    })
+                }
+                
+                const response = {
+                    produto: {
+                        id_produtos: result[0].id_produtos,
+                        nome: result[0].nome,
+                        preco: result[0].preco,
+                        request: {
+                            tipo: 'GET',
+                            descricao: 'Retorna um produto',
+                            url: 'http://localhost:3000/produtos'
+                        }
+                    }
+                }
+                return res.status(200).send(response);
             }
         )
     })
