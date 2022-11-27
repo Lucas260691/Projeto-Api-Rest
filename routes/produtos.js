@@ -8,11 +8,11 @@ router.get('/', (req, res, next) => {
         if (error) { return res.status(500).send({ error: error} )}
         conn.query(
             'SELECT * FROM produtos;',
-            (error, resultado, fields) => {
+            (error, result, fields) => {
                 if (error) { return res.status(500).send({ error: error} )}
                 const response = {
-                    quantidade: resultado.length,
-                    produtos: resultado.map(prod => {
+                    quantidade: result.length,
+                    produtos: result.map(prod => {
                         return {
                             id_produtos: prod.id_produtos,
                             nome: prod.nome,
