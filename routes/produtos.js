@@ -38,18 +38,23 @@ router.post('/', (req, res, next) => {
         conn.query(
             'INSERT INTO produtos (nome, preco) VALUES (?,?)',
             [req.body.nome, req.body.preco],
-            (error, resultado, field) => {
+            (error, result, field) => {
                 conn.release();
-                if(error) {
-                    return res.status(500).send({
-                        error: error,
-                        response: null
-                    })
-                }
-                res.status(201).send({
+                if(error) { return res.status(500).send({ error: error, }) }
+                const response = {
                     mensagem: 'Produto inserido com sucesso',
-                    id_produtos: resultado.insertId
-                })
+                    produtoCriado: {
+                        id_produtos: result.id_produtos,
+                        nome: req.body.nome,
+                        preco: req.body.preco,
+                        request: {
+                            tipo: 'POST',
+                            descricao: 'Insere um produto',
+                            url: 'http://localhost:3000/produtos'
+                        }
+                    }
+                }
+                return res.status(201).send(response);
             }
         )
     })
