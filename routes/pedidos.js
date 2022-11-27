@@ -33,14 +33,34 @@ router.get('/', (req, res, next) => {
 
 // Insere um pedido
 router.post('/', (req, res, next) => {
-    const pedido = {
-        id_produto: req.body.id_produto,
-        quantidade: req.body.quantidade
-    }
-    res.status(201).send({
-        mensagem: 'Insere um pedido',
-        pedidoCriado: pedido
+    mysql.getConnection((error, conn) => {
+        if (error) { return res.status(500).send({ error: error} )}
+        conn.query(
+            'INSERT INTO pedidos (id_produtos, quantidade) VALUES (?,?)',
+            [req.body.id_produtos, req.body.quantidade],
+            (error, result, field) => {
+                conn.release();
+                console.error(error)
+                if(error) { return res.status(500).send({ error: error }) }
+                const response = {
+                    mensagem: 'Pedido inserido com sucesso',
+                    pedidoCriado: {
+                        id_pedidos: result.id_pedidos,
+                        id_produtos: req.body.id_produtos,
+                        quantidade: req.body.quantidade,
+                        request: {
+                            tipo: 'GET',
+                            descricao: 'Retorna todos os pedidos',
+                            url: 'http://localhost:3000/pedidos'
+                        }
+                    }
+                }
+                return res.status(201).send(response);
+            }
+        )
     })
+    
+    
 });
 
 // Lista dados de um pedido
