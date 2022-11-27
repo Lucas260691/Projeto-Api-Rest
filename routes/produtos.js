@@ -10,7 +10,22 @@ router.get('/', (req, res, next) => {
             'SELECT * FROM produtos;',
             (error, resultado, fields) => {
                 if (error) { return res.status(500).send({ error: error} )}
-                return res.status(200).send({response: resultado})
+                const response = {
+                    quantidade: resultado.length,
+                    produtos: resultado.map(prod => {
+                        return {
+                            id_produtos: prod.id_produtos,
+                            nome: prod.nome,
+                            preco: prod.preco,
+                            request: {
+                                tipo: 'GET',
+                                descricao: 'Retorna todos os produtos',
+                                url:'http://localhost:3000/produtos/' + prod.id_produtos
+                            }
+                        }
+                    })
+                }
+                return res.status(200).send(response)
             }
         ) 
     })
@@ -33,7 +48,7 @@ router.post('/', (req, res, next) => {
                 }
                 res.status(201).send({
                     mensagem: 'Produto inserido com sucesso',
-                    id_produto: resultado.insertId
+                    id_produtos: resultado.insertId
                 })
             }
         )
@@ -42,12 +57,12 @@ router.post('/', (req, res, next) => {
 });
 
 // Lista um produto pelo id específico
-router.get('/:id_produto', (req, res, next) => {
+router.get('/:id_produtos', (req, res, next) => {
     mysql.getConnection((error, conn) => {
         if(error) { return res.status(500).send({ error: error})}
         conn.query(
             'SELECT * FROM produtos WHERE id_produtos = ?;',
-            [req.params.id_produto],
+            [req.params.id_produtos],
             (error, resultado, fields) => {
                 if(error) { return res.status(500).send({ error: error})}
                 return res.status(200).send({response: resultado})
@@ -72,7 +87,7 @@ router.patch('/', (req, res, next) => {
            ],
             (error, resultado, fields) => {
                 if(error) { return res.status(500).send({ error: error})}
-                res.status(201).send({
+                res.status(202).send({
                     mensagem: 'Produto alterado com sucesso'
                 })
             }
@@ -82,8 +97,19 @@ router.patch('/', (req, res, next) => {
 
 // Deleta um produto
 router.delete('/', (req, res, next) => {
-    res.status(201).send({
-        mensagem: 'Exclui produto'
+    mysql.getConnection((error, conn) => {
+        if(error) {return res.status(500).send({ error: error})}
+        conn.query(
+            `DELETE FROM produtos WHERE id_produtos = ?`, [req.body.id_produtos],
+            (error, resultado, field) => {
+                conn.release();
+                if (error) { return res.status(500).send({ error: error })}
+
+                res.status(202).send({
+                    mensagem: 'Produto removido com sucesso'
+                })
+            }
+        )
     })
 })
 
